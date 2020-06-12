@@ -8,8 +8,8 @@ Script em python para backup de equipamentos Ubiquiti e Mikrotik por SSH
 - _LOCKFILE = "/tmp/bkp-equip.lock" - Arquivo lock do script, impede de rodar duas instância
 
 ### Arquivo: equipamentos.txt: Lista dos equipamentos
-- formato do arquivo;
-<ros|ubnt>:<ip>:<port>:<user>:<pass>:<name>  
+- formato do arquivo;  
+ros|ubnt:ip:port:user:pass:name  
 Onde:  
   ros: Equipamentos RouterOS Mikrotik  
   ubnt: Equipamentos Ubiquiti  
