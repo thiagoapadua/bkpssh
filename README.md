@@ -20,3 +20,4 @@ Exemplo:
 ### Agendamento
 Adicionar ao cron a linha a seguir para executar o backup diariamente às 02:00 da manhã.
 00 02 * * * /root/bkpssh/bkp-equip.py
+
