@@ -1,0 +1,2 @@
+ros:172.16.1.51:22:admin:senha:Mikrotik-POP-1
+ubnt:172.16.0.202:22:admin:senha:Rocket-Setorial-1
