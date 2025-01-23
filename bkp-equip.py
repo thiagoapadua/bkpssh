@@ -4,20 +4,22 @@ import paramiko, time, os, sys, logging, socket
 
 logging.basicConfig()
 
-_BKPDIR = "/home/bkpssh/rede"
-_HOSTFILE = "/root/bkpssh/equipamentos.txt"
-_LOGFILE = "/root/bkpssh/bkp-equip.log"
+_BKPDIR = "rede"
+_HOSTFILE = "equipamentos.txt"
+_LOGFILE = "bkp-equip.log"
 _DIASBKP = "10"
 _LOCKFILE = "/tmp/bkp-equip.lock"
+_TIMEOUT = 10
+
 
 if os.path.exists(_LOCKFILE):
-        print "Existe outra instancia do script bkp-equip.py em andamento"
+        print ("Existe outra instancia do script bkp-equip.py em andamento")
         sys.exit(-1)
 else:
         open(_LOCKFILE, 'w').write("1")
         try:
                 arquivo = open(_HOSTFILE, 'r')
-                arqlog = open(_LOGFILE,"w",0)
+                arqlog = open(_LOGFILE,"w")
 
                 for linha in arquivo:
                         if not linha.lstrip().startswith('#'):
@@ -28,7 +30,7 @@ else:
                                 h_usuario = host[3]
                                 h_senha = host[4]
                                 h_nome = host[5].replace('\n','')
-
+                                
                                 data = time.strftime("%Y-%m-%d")
 
                                 pathCompleto = _BKPDIR + "/" + data
@@ -48,23 +50,23 @@ else:
                                 try:
                                         ssh = paramiko.SSHClient()
                                         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-                                        ssh.connect(h_ip, h_porta, username=h_usuario, password=h_senha)
+                                        ssh.connect(h_ip, port=h_porta, username=h_usuario, password=h_senha, timeout=_TIMEOUT, look_for_keys=False)
                                         ssh_stdin,ssh_stdout, ssh_stderr = ssh.exec_command(cmd)
                                         data = ssh_stdout.read()
                                         ssh.close()
-                                except socket.error, esock:
+                                except socket.error as esock:
                                         arqlog.write(time.strftime("%Y-%m-%d %H:%M:%S") + " Erro com host " + h_nome + "(" + h_ip  + ") " + str(esock) + "\n")
                                         continue
-                                except paramiko.SSHException, essh:
+                                except paramiko.SSHException as essh:
                                         arqlog.write(time.strftime("%Y-%m-%d %H:%M:%S") + " Erro com host " + h_nome + "(" + h_ip  + ") " + str(essh) + "\n")
                                         continue
 
 
-                                dstfile = open(pathCompleto + "/" + nomearqdst, "w")
+                                dstfile = open(pathCompleto + "/" + nomearqdst, "wb")
                                 dstfile.write(data)
                                 dstfile.close()
 
-        except Exception, ex:
+        except Exception as ex:
                 arqlog.write(time.strftime("%Y-%m-%d %H:%M:%S") + " Erro com host " + h_nome + "(" + h_ip  + ") " + str(ex) + "\n")
 
         finally:
